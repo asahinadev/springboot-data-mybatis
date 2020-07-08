@@ -1,19 +1,17 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.5.RELEASE'
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id "com.avast.gradle.docker-compose" version "0.12.1"
 	id 'java'
 }
 
-apply plugin: 'io.spring.dependency-management'
-
-group = 'com.example.spring'
+group = 'com.example.spring.doma'
 version = '0.0.1'
-sourceCompatibility = '11'
+
+sourceCompatibility = 11
+targetCompatibility = 11
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -24,27 +22,85 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'mysql:mysql-connector-java'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.webjars:bootstrap:4.3.1'
-    implementation 'org.webjars:jquery:3.4.1'
-    implementation 'org.webjars:popper.js:1.15.0'
-    implementation 'org.webjars:datatables:1.10.19'
-    implementation 'org.webjars:webjars-locator-core:0.37'
-    implementation 'org.webjars:font-awesome:5.8.2'
-    implementation 'org.webjars:datatables-fixedheader:3.1.4'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'mysql:mysql-connector-java'
+	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.apache.commons:commons-lang3'
+	implementation 'org.webjars:bootstrap:4.3.1'
+	implementation 'org.webjars:jquery:3.4.1'
+	implementation 'org.webjars:popper.js:1.15.0'
+	implementation 'org.webjars:datatables:1.10.19'
+	implementation 'org.webjars:webjars-locator-core:0.37'
+	implementation 'org.webjars:font-awesome:5.8.2'
+	implementation 'org.webjars:datatables-fixedheader:3.1.4'
+	
+	runtimeOnly         'org.springframework.boot:spring-boot-devtools'
+	
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.seasar.doma.boot:doma-spring-boot-starter:1.0.2'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    developmentOnly 'org.springframework.boot:spring-boot-starter-tomcat'
-
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-    
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'org.springframework.security:spring-security-test' 
 }
+
+test {
+	useJUnitPlatform()
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
+
+tasks.eclipse.doFirst {
+
+    File buildship = file(".settings/org.eclipse.buildship.core.prefs")
+    delete buildship
+    buildship.append('''# create by build.gradle
+
+build.commands=org.eclipse.jdt.core.javabuilder,org.eclipse.wst.common.project.facet.core.builder,org.eclipse.wst.validation.validationbuilder
+connection.arguments=
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
+connection.java.home=null
+connection.jvm.arguments=
+connection.project.dir=
+derived.resources=.gradle,build
+eclipse.preferences.version=1
+natures=org.eclipse.jdt.core.javanature,org.eclipse.wst.common.project.facet.core.nature,org.eclipse.wst.common.modulecore.ModuleCoreNature,org.eclipse.jem.workbench.JavaEMFNature
+project.path=\\:
+
+'''. stripIndent())
+
+    File resources= file(".settings/org.eclipse.core.resources.prefs")
+    delete resources 
+    resources.append('''# creatae by build.gradle
+
+eclipse.preferences.version=1
+encoding/<project>=UTF-8
+
+'''. stripIndent())
+
+    File apt= file(".settings/org.eclipse.jdt.apt.core.prefs")
+    apt resources 
+    apt.append('''# creatae by build.gradle
+
+eclipse.preferences.version=1
+org.eclipse.jdt.apt.aptEnabled=true
+org.eclipse.jdt.apt.genSrcDir=.apt_generated
+org.eclipse.jdt.apt.genTestSrcDir=.apt_generated_tests
+org.eclipse.jdt.apt.reconcileEnabled=true
+
+'''. stripIndent())
+
+}
+

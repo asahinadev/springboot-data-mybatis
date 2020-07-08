@@ -3,4 +3,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'spring-demo-mybatis'
+rootProject.name = 'springboot-data-mybatis'

@@ -10,9 +10,9 @@ spring:
     cache-duration: -1
     encoding: UTF-8
     
-  datasource:    url: "jdbc:mysql://localhost/spring-demo_jdbctemplate"
-    username: "spring-demo"
-    password: "spring-demo" 
+  datasource:    url: "jdbc:mysql://localhost:3306/spring"
+    username: "spring"
+    password: "spring" 
     hikari:
       data-source-properties:
         useSSL:         false
